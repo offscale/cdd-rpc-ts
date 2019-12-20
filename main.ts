@@ -2,4 +2,4 @@
 
 interface CDDService {
     listModels: () => number;
-  }
+}

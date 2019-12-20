@@ -1,5 +1,5 @@
 {
     "dependencies": {
-        "jsonrpc-ts": "^0.2.0"
+        "@fitbit/jsonrpc-ts": "^3.0.3"
     }
 }
