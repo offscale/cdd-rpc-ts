@@ -1,5 +1,8 @@
 {
     "dependencies": {
-        "@fitbit/jsonrpc-ts": "^3.0.3"
+        "@types/express": "^4.17.2",
+        "express": "^4.17.1",
+        "json-rpc-ws": "^7.0.1",
+        "ws": "^7.2.1"
     }
 }

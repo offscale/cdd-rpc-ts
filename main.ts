@@ -1,5 +1,0 @@
-
-
-interface CDDService {
-    listModels: () => number;
-}
