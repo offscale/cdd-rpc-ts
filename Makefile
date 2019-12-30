@@ -1,8 +1,14 @@
 build:
-	tsc server-rpc.ts
+	rm build/*
+	tsc src/server.ts --outDir build
 
-server: build
-	node server-rpc.js
+server:
+	tsc src/server.ts --outDir build
+	node build/server.js
 
 client:
 	tsc client-rpc.ts && node client-rpc.js
+
+clean:
+	rm src/*.js
+	rm build/*.js
