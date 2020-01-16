@@ -3,7 +3,7 @@ build:
 	tsc src/server.ts --outDir build
 
 server:
-	tsc src/server.ts --outDir build
+	tsc src/server.ts --esModuleInterop --outDir build
 	node build/server.js
 
 client:
