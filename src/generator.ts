@@ -34,6 +34,16 @@ function nodeToString(node: ts.Node): string {
   return result;
 }
 
+function stringToSource(code: string): ts.SourceFile {
+  return ts.createSourceFile(
+    "someFileName.ts",
+    code,
+    ts.ScriptTarget.Latest,
+    /*setParentNodes*/ false,
+    ts.ScriptKind.TS
+  );
+}
+
 export module Generator {
   export function createModel(name: string): string {
     // let klass = createClass(name);
@@ -41,8 +51,23 @@ export module Generator {
     return nodeToString(createClass(name));
   }
 
-  export function parseModels(code: string): [string] {
+  export function parseModels(code: string): string[] {
+    const options = {
+      target: ts.ScriptTarget.ES5,
+      module: ts.ModuleKind.CommonJS
+    };
     // extract models
-    return ["doggo"];
+    let sourceFile = stringToSource(code);
+    var models: string[] = [];
+    var requests = [];
+
+    ts.forEachChild(sourceFile, function(node: ts.Node) {
+      if (ts.isClassDeclaration(node) && node.name) {
+        let className = node.name.escapedText;
+        models.push(className.toString());
+      }
+    });
+
+    return models;
   }
 }
