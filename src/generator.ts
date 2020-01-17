@@ -42,6 +42,7 @@ export module Generator {
   }
 
   export function parseModels(code: string): [string] {
+    // extract models
     return ["doggo"];
   }
 }

@@ -1,13 +1,17 @@
 var JsonRpcWs = require("json-rpc-ws");
-// var generator = import("./generator");
 import { Generator } from "./generator";
 var server = JsonRpcWs.createServer();
 
 server.expose("generateCode", function mirror(params, reply) {
   console.log("generateCode -> params: ", params);
 
-  let code = Generator.createModel("Doggo");
-  reply(null, { code: code });
+  let models = params["models"]
+    .map((model: string) => {
+      return Generator.createModel(model);
+    })
+    .join("\n\n");
+
+  reply(null, { code: models });
 });
 
 server.expose("parse", function mirror(params, reply) {
@@ -15,11 +19,6 @@ server.expose("parse", function mirror(params, reply) {
   // let model = Generator.createModel("Doggo");
   reply(null, { models: Generator.parseModels(params["code"]) });
 });
-
-// server.expose("list-models", function mirror(params, reply) {
-//   console.log("list-models called. params: ", params);
-//   reply(null, [{ name: "Pet", code: "function pet() {}" }]);
-// });
 
 server.start({ port: 7778 }, function started() {
   console.log("Server started on port 7778");
