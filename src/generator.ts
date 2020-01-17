@@ -45,26 +45,26 @@ function stringToSource(code: string): ts.SourceFile {
 }
 
 export module Generator {
-  export function createModel(name: string): string {
+  export function createModel(model): string {
     // let klass = createClass(name);
 
-    return nodeToString(createClass(name));
+    return nodeToString(createClass(model.name));
   }
 
-  export function parseModels(code: string): string[] {
+  export function parseModels(code: string) {
     const options = {
       target: ts.ScriptTarget.ES5,
       module: ts.ModuleKind.CommonJS
     };
     // extract models
     let sourceFile = stringToSource(code);
-    var models: string[] = [];
+    var models = [];
     var requests = [];
 
     ts.forEachChild(sourceFile, function(node: ts.Node) {
       if (ts.isClassDeclaration(node) && node.name) {
         let className = node.name.escapedText;
-        models.push(className.toString());
+        models.push({ name: className.toString() });
       }
     });
 
