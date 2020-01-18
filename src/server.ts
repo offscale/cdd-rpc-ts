@@ -16,8 +16,8 @@ server.expose("generateCode", function mirror(params, reply) {
 
 server.expose("parse", function mirror(params, reply) {
   console.log("parse -> params: ", params);
-  // let model = Generator.createModel("Doggo");
-  reply(null, { models: Generator.parseModels(params["code"]) });
+  // reply(null, { models: Generator.parseModels(params["code"]) });
+  reply(null, Generator.parseProject(params["code"]));
 });
 
 server.start({ port: 7778 }, function started() {
