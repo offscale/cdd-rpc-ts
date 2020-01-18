@@ -65,54 +65,8 @@ function nodeToString(node: ts.Node): string {
   return result;
 }
 
-function stringToSource(code: string): ts.SourceFile {
-  return ts.createSourceFile(
-    "someFileName.ts",
-    code,
-    ts.ScriptTarget.Latest,
-    /*setParentNodes*/ false,
-    ts.ScriptKind.TS
-  );
-}
-
 export module Generator {
-  export function parseProject(code: string) {
-    return { models: getModels(code), requests: [] };
-  }
-
   export function createModel(model): string {
     return nodeToString(createClass(model.name, model.vars || []));
   }
-
-  export function parseModels(code: string) {
-    // extract models
-    let sourceFile = stringToSource(code);
-    var models = [];
-    var requests = [];
-
-    ts.forEachChild(sourceFile, function(node: ts.Node) {
-      if (ts.isClassDeclaration(node) && node.name) {
-        let className = node.name.escapedText;
-        models.push({ name: className.toString() });
-      }
-    });
-
-    return models;
-  }
-}
-
-export function getModels(code: string): Project.Model[] {
-  // extract models
-  let sourceFile = stringToSource(code);
-  var models = [];
-  var requests = [];
-
-  ts.forEachChild(sourceFile, function(node: ts.Node) {
-    if (ts.isClassDeclaration(node) && node.name) {
-      let className = node.name.escapedText;
-      models.push({ name: className.toString() });
-    }
-  });
-
-  return models;
 }

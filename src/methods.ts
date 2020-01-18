@@ -1,5 +1,8 @@
 import { Generator } from "./generator";
+import * as Parser from "./parser";
 
+// RPC CALL: generate
+// generate code from adt
 export function generate(params, reply) {
   console.log("generate -> params: ", params);
 
@@ -12,7 +15,9 @@ export function generate(params, reply) {
   reply(null, { code: models });
 }
 
+// RPC CALL: parse
+// parse code into adt
 export function parse(params, reply) {
   console.log("parse -> params: ", params);
-  reply(null, Generator.parseProject(params["code"]));
+  reply(null, Parser.parseProject(params["code"]));
 }
