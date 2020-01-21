@@ -5,6 +5,7 @@
   "keywords": [],
   "author": "Rob Robinson",
   "license": "ISC",
+  "main": "build/server.js",
   "dependencies": {
     "@types/express": "^4.17.2",
     "express": "^4.17.1",
@@ -13,7 +14,7 @@
     "ws": "^7.2.1"
   },
   "scripts": {
-    "build": "tsc && node build/server.js",
-    "server": "node build/server.js"
+    "build": "tsc && node .",
+    "server": "node ."
   }
 }

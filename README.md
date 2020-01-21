@@ -3,5 +3,5 @@
 ## Building
 
 ```bash:
-npm run server
+npm run build
 ```
