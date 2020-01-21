@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "tsc && node .",
-    "server": "node ."
+    "server": "node .",
+    "watch": "tsc --pretty --watch"
   }
 }
