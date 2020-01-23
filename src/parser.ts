@@ -12,13 +12,22 @@ function parseModels(code: string): Project.Model[] {
   var requests = [];
 
   ts.forEachChild(sourceFile, function(node: ts.Node) {
+    // if node is a Class,
     if (ts.isClassDeclaration(node) && node.name) {
+      // immediately push it (incorrect assumption, need to fix this)
       let className = node.name.escapedText;
-      models.push({ name: className.toString() });
+      models.push({
+        name: className.toString(),
+        vars: parseVars(node.getChildren())
+      });
     }
   });
 
   return models;
+}
+
+function parseVars(nodes: ts.Node[]) {
+  return [];
 }
 
 function stringToSource(code: string): ts.SourceFile {
