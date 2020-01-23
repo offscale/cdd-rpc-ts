@@ -69,4 +69,8 @@ export module Generator {
   export function createModel(model): string {
     return nodeToString(createClass(model.name, model.vars || []));
   }
+
+  export function createCode(models: any[], requests: any[]): string {
+    return "ccccoooodeeeee";
+  }
 }
