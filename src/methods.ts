@@ -25,7 +25,7 @@ export function parse(params, reply) {
 // RPC CALL: update
 // update code from adt
 export function update(params, reply) {
-  console.log("generate -> params: ", params);
+  console.log("update -> params: ", params);
   let { models, requests } = params["project"];
   // let code_project = extractProject(params["code"]);
 

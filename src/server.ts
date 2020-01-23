@@ -5,6 +5,7 @@ var server = JsonRpcWs.createServer();
 
 server.expose("generate", Methods.generate);
 server.expose("parse", Methods.parse);
+server.expose("update", Methods.update);
 
 // start server
 server.start({ port: 7778 }, function started() {
