@@ -52,6 +52,22 @@ function createClass(
   );
 }
 
+function createFunction(
+  fnName: string,
+  params: Project.Variable[]
+): ts.FunctionDeclaration {
+  return ts.createFunctionDeclaration(
+    undefined,
+    undefined,
+    undefined,
+    fnName,
+    undefined,
+    [],
+    undefined,
+    undefined
+  );
+}
+
 function nodeToString(node: ts.Node): string {
   const resultFile = ts.createSourceFile(
     "someFileName.ts",
@@ -68,6 +84,10 @@ function nodeToString(node: ts.Node): string {
 export module Generator {
   export function createModel(model): string {
     return nodeToString(createClass(model.name, model.vars || []));
+  }
+
+  export function createRequest(request): string {
+    return nodeToString(createFunction(request.name, request.params || []));
   }
 
   export function createCode(models: any[], requests: any[]): string {

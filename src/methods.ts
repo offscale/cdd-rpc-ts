@@ -29,11 +29,17 @@ export function update(params, reply) {
   let { models, requests } = params["project"];
   // let code_project = extractProject(params["code"]);
 
-  let model_code = models
-    .map((model: string) => {
-      return Generator.createModel(model);
-    })
-    .join("\n\n");
+  var code: string[] = [];
 
-  reply(null, { code: model_code });
+  for (let model of models) {
+    code.push(Generator.createModel(model));
+  }
+
+  for (let request of requests) {
+    code.push(Generator.createRequest(request));
+  }
+
+  reply(null, {
+    code: code.join("\n\n")
+  });
 }
