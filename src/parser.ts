@@ -1,5 +1,5 @@
 import { Project } from "./project";
-import ts from "typescript";
+import ts, { isIdentifier, SyntaxKind } from "typescript";
 
 export function parseProject(code: string) {
   return { models: parseModels(code), requests: [] };
@@ -20,7 +20,35 @@ function parseModels(code: string): Project.Model[] {
       let vars = [];
 
       ts.forEachChild(node, (node: ts.Node) => {
-        parseVars(node);
+        // looking for variables...
+
+        if (ts.isPropertyDeclaration(node) && node.name) {
+          var name, ty;
+
+          if (ts.isIdentifier(node.name)) {
+            console.log("####", node.name.escapedText);
+            name = node.name.escapedText;
+          }
+
+          if (ts.isTypeReferenceNode(node.type)) {
+            if (ts.isIdentifier(node.type.typeName)) {
+              console.log(">>>>", node.type.typeName.escapedText);
+              ty = node.type.typeName.escapedText;
+            }
+          }
+
+          if (node.type.kind == SyntaxKind.StringKeyword) {
+            ty = "string";
+          }
+
+          // if ts.isTypeReferenceNode(node.type) {
+          //   console.log("type: ", node.type.get)
+          // }
+
+          // console.log(node.name);
+          // node.name.getText();
+          vars.push({ name: name, type: ty });
+        }
       });
 
       models.push({
@@ -33,14 +61,7 @@ function parseModels(code: string): Project.Model[] {
   return models;
 }
 
-function parseVars(node: ts.Node) {
-  var vars = [];
-
-  if (ts.isVariableDeclaration(node) && node.name) {
-    vars.push(name: node.name);
-  }
-  return vars;
-}
+function parseVar(node: ts.Node) {}
 
 function stringToSource(code: string): ts.SourceFile {
   return ts.createSourceFile(
