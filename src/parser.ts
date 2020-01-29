@@ -47,7 +47,7 @@ function parseModels(code: string): Project.Model[] {
 
           // console.log(node.name);
           // node.name.getText();
-          vars.push({ name: name, type: ty });
+          vars.push(new Project.Variable(name, ty, false, null));
         }
       });
 
