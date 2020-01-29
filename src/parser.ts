@@ -11,14 +11,21 @@ function parseModels(code: string): Project.Model[] {
   var models = [];
   var requests = [];
 
-  ts.forEachChild(sourceFile, function(node: ts.Node) {
+  ts.forEachChild(sourceFile, (node: ts.Node) => {
     // if node is a Class,
     if (ts.isClassDeclaration(node) && node.name) {
       // immediately push it (incorrect assumption, need to fix this)
+
       let className = node.name.escapedText;
+      let vars = [];
+
+      ts.forEachChild(node, (node: ts.Node) => {
+        parseVars(node);
+      });
+
       models.push({
         name: className.toString(),
-        vars: parseVars(node.getChildren())
+        vars: vars
       });
     }
   });
@@ -26,8 +33,13 @@ function parseModels(code: string): Project.Model[] {
   return models;
 }
 
-function parseVars(nodes: ts.Node[]) {
-  return [];
+function parseVars(node: ts.Node) {
+  var vars = [];
+
+  if (ts.isVariableDeclaration(node) && node.name) {
+    vars.push(name: node.name);
+  }
+  return vars;
 }
 
 function stringToSource(code: string): ts.SourceFile {
