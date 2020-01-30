@@ -23,31 +23,29 @@ function parseModels(code: string): Project.Model[] {
         // looking for variables...
 
         if (ts.isPropertyDeclaration(node) && node.name) {
-          var name, ty;
+          var name: string, ty: string;
 
+          // get name
           if (ts.isIdentifier(node.name)) {
-            console.log("####", node.name.escapedText);
-            name = node.name.escapedText;
+            name = node.name.escapedText.toString();
           }
 
+          // check for complex types
           if (ts.isTypeReferenceNode(node.type)) {
             if (ts.isIdentifier(node.type.typeName)) {
-              console.log(">>>>", node.type.typeName.escapedText);
-              ty = node.type.typeName.escapedText;
+              ty = node.type.typeName.escapedText.toString();
             }
           }
 
+          // check for simple types
           if (node.type.kind == SyntaxKind.StringKeyword) {
-            ty = "string";
+            ty = "string".toString();
           }
 
-          // if ts.isTypeReferenceNode(node.type) {
-          //   console.log("type: ", node.type.get)
-          // }
-
-          // console.log(node.name);
-          // node.name.getText();
-          vars.push(new Project.Variable(name, ty, false, null));
+          console.log(name, ty);
+          if (name != null && ty != null) {
+            vars.push(new Project.Variable(name, ty, false, null));
+          }
         }
       });
 

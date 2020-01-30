@@ -19,7 +19,9 @@ export function generate(params, reply) {
 // parse code into adt
 export function parse(params, reply) {
   console.log("parse -> params: ", params);
-  reply(null, Parser.parseProject(params["code"]));
+  let project = Parser.parseProject(params["code"]);
+  // console.log(`  result: ${project}`);
+  reply(null, project);
 }
 
 // RPC CALL: update
