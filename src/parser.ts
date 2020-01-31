@@ -39,12 +39,17 @@ function parseModels(code: string): Project.Model[] {
 
           // check for simple types
           if (node.type.kind == SyntaxKind.StringKeyword) {
-            ty = "string".toString();
+            ty = "String";
           }
 
           console.log(name, ty);
           if (name != null && ty != null) {
-            vars.push(new Project.Variable(name, ty, false, null));
+            vars.push({
+              name: name,
+              type: ty,
+              optional: false,
+              value: null
+            });
           }
         }
       });
