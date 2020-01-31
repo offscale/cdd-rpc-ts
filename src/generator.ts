@@ -1,4 +1,4 @@
-import ts from "typescript";
+import ts, { ModuleResolutionKind } from "typescript";
 import { Project } from "./project";
 
 function typeFor(type: string): ts.TypeNode {
@@ -37,7 +37,7 @@ function createClass(
   className: string,
   vars: Project.Variable[]
 ): ts.ClassDeclaration {
-  let varNodes = vars.map(function(variable) {
+  let varNodes = vars.map(variable => {
     return createVar(variable);
   });
 
@@ -54,7 +54,8 @@ function createClass(
 
 function createFunction(
   fnName: string,
-  params: Project.Variable[]
+  params: Project.Variable[],
+  variables: Project.Variable[]
 ): ts.FunctionDeclaration {
   return ts.createFunctionDeclaration(
     undefined,
@@ -62,8 +63,57 @@ function createFunction(
     undefined,
     fnName,
     undefined,
-    [],
+    variablesToFunctionParams(params),
     undefined,
+    ts.createBlock(createVariableDeclarations(variables), true)
+  );
+}
+
+function createVariableDeclarations(variables: Project.Variable[]) {
+  console.log(variables);
+  return variables.map(variable => {
+    return createVariableDeclaration(
+      variable.name,
+      variable.type,
+      variable.value
+    );
+  });
+}
+
+function createVariableDeclaration(varName, varType, varValue) {
+  return ts.createVariableStatement(
+    undefined,
+    ts.createVariableDeclarationList(
+      [
+        ts.createVariableDeclaration(
+          ts.createIdentifier(varName),
+          ts.createTypeReferenceNode(ts.createIdentifier(varType), undefined),
+          ts.createStringLiteral(varValue)
+        )
+      ],
+      ts.NodeFlags.None
+    )
+  );
+}
+
+function variablesToFunctionParams(
+  variables: Project.Variable[]
+): ts.ParameterDeclaration[] {
+  return variables.map(variable => {
+    return variableToFunctionParams(variable);
+  });
+}
+
+function variableToFunctionParams(
+  variable: Project.Variable
+): ts.ParameterDeclaration {
+  return ts.createParameter(
+    undefined,
+    undefined,
+    undefined,
+    ts.createIdentifier(variable.name),
+    undefined,
+    ts.createTypeReferenceNode(ts.createIdentifier(variable.type), undefined),
     undefined
   );
 }
@@ -87,7 +137,13 @@ export module Generator {
   }
 
   export function createRequest(request): string {
-    return nodeToString(createFunction(request.name, request.params || []));
+    console.log(request);
+    let req = new Project.Variable("method", "String", false, request.method);
+    let path = new Project.Variable("path", "String", false, request.path);
+
+    return nodeToString(
+      createFunction(request.name, request.params || [], [req, path])
+    );
   }
 
   export function createCode(models: any[], requests: any[]): string {
