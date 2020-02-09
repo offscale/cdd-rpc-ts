@@ -22,7 +22,7 @@ export function parse(params, reply) {
   let project = Parser.parseProject(params["code"]);
   // console.log(`  result: ${project}`);
   console.log("<- parse response: ", project);
-  reply(null, { project: project });
+  reply(null, { prooject: project });
 }
 
 // RPC CALL: update
