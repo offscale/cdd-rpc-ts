@@ -1,21 +1,31 @@
 {
-  "name": "cdd-rpc-typescript",
-  "version": "1.0.0",
-  "description": "A Discord bot!",
-  "keywords": [],
-  "author": "Rob Robinson",
-  "license": "ISC",
-  "main": "build/server.js",
+  "name": "cdd-rpc-ts",
+  "version": "0.0.2",
+  "description": "CDD JSON-RPC server for TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "server": "node .",
+    "start": "tsc --pretty --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/offscale/cdd-rpc-ts.git"
+  },
+  "author": "Offscale.io",
+  "license": "(Apache-2.0 OR MIT)",
+  "bugs": {
+    "url": "https://github.com/offscale/cdd-rpc-ts/issues"
+  },
+  "homepage": "https://github.com/offscale/cdd-rpc-ts#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.2"
+  },
   "dependencies": {
-    "@types/express": "^4.17.2",
     "express": "^4.17.1",
     "json-rpc-ws": "^7.0.1",
-    "typescript": "^3.7.4",
+    "typescript": "^3.7.5",
     "ws": "^7.2.1"
-  },
-  "scripts": {
-    "build": "tsc && node .",
-    "server": "node .",
-    "start": "tsc --pretty --watch"
   }
 }
