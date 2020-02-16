@@ -1,5 +1,5 @@
 import { Project } from "./project";
-import ts, { isIdentifier, SyntaxKind } from "typescript";
+import ts, { SyntaxKind } from "typescript";
 
 export function parseProject(code: string) {
   return { models: extractModels(code), requests: extractRequests(code) };
@@ -8,7 +8,7 @@ export function parseProject(code: string) {
 function extractModels(code: string): Project.Model[] {
   // extract models
   let sourceFile = stringToSource(code);
-  var models = [];
+  const models = [];
 
   ts.forEachChild(sourceFile, (node: ts.Node) => {
     // if node is a Class,
@@ -63,7 +63,12 @@ function extractModels(code: string): Project.Model[] {
 }
 
 // todo: skip double parsing, refactor
-function extractRequests(code: string) {
+function extractRequests(code: string): Array<{name: string,
+  path: string,
+  params: string,
+  method: string,
+  response_type: string,
+  error_type: string}> {
   // extract models
   let sourceFile = stringToSource(code);
   var requests = [];
@@ -104,8 +109,8 @@ function extractVariable(
   return null;
 }
 
-function findVariable(fnBody: ts.FunctionBody, name: string) {
-  var variable;
+function findVariable(fnBody: ts.FunctionBody, name: string): Project.BaseVariable {
+  let variable: Project.BaseVariable;
 
   fnBody.statements.forEach((statement: ts.Statement) => {
     if (ts.isVariableStatement(statement)) {
@@ -119,7 +124,8 @@ function findVariable(fnBody: ts.FunctionBody, name: string) {
             variable = {
               name: varName.escapedText.toString(),
               type: varType.toString(),
-              value: varValue.text
+              value: varValue.text,
+              optional: true
             };
           }
         }
@@ -130,7 +136,7 @@ function findVariable(fnBody: ts.FunctionBody, name: string) {
 }
 
 function extractParams(node: ts.Node) {
-  let params = [];
+  const params: Project.BaseVariable[] = [];
 
   ts.forEachChild(node, node => {
     if (ts.isParameter(node)) {
@@ -144,8 +150,8 @@ function extractParams(node: ts.Node) {
   return params;
 }
 
-function extractParam(node: ts.ParameterDeclaration) {
-  var name: string, ty: string;
+function extractParam(node: ts.ParameterDeclaration): Project.BaseVariable | undefined {
+  let name: string, ty: string;
 
   // get name
   if (ts.isIdentifier(node.name)) {

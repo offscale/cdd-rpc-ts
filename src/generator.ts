@@ -1,24 +1,24 @@
-import ts, { ModuleResolutionKind } from "typescript";
+import ts from "typescript";
+
 import { Project } from "./project";
 
 function typeFor(type: string): ts.TypeNode {
   if (type[0] == "[") {
     return ts.createArrayTypeNode(typeFor(type.substr(1, type.length - 2)));
   }
-  if (type == "String") {
-    return ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword);
+  switch (type) {
+    case "String":
+      return ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword);
+    case "Bool":
+      return ts.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword);
+    case "Float":
+      return ts.createKeywordTypeNode(ts.SyntaxKind.NumberKeyword);
+      /* case "Int":
+      return ts.createTypeReferenceNode("Int", [])
+       */
+    default:
+      return ts.createTypeReferenceNode(type, []);
   }
-  if (type == "Bool") {
-    return ts.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword);
-  }
-  if (type == "Float") {
-    return ts.createKeywordTypeNode(ts.SyntaxKind.NumberKeyword);
-  }
-  // if (type == "Int") {
-  //   return ts.createTypeReferenceNode("Int",[])
-  // }
-
-  return ts.createTypeReferenceNode(type, []);
 }
 
 function createVar(variable: Project.Variable): ts.PropertyDeclaration {
@@ -127,8 +127,7 @@ function nodeToString(node: ts.Node): string {
     ts.ScriptKind.TS
   );
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
-  const result = printer.printNode(ts.EmitHint.Unspecified, node, resultFile);
-  return result;
+  return printer.printNode(ts.EmitHint.Unspecified, node, resultFile);
 }
 
 export module Generator {

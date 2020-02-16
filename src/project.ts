@@ -43,12 +43,17 @@ export module Project {
       this.vars = vars
     }
   }
-  export class Variable {
+
+  export class BaseVariable {
     name: string
     type: string
     optional: boolean
     value?: string
+  }
+
+  export class Variable extends BaseVariable {
     constructor(name: string, type: string, optional: boolean, value?: string) {
+      super();
       this.name = name
       this.type = type
       this.optional = optional
