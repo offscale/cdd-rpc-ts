@@ -2,7 +2,7 @@
   "name": "cdd-rpc-ts",
   "version": "0.0.3",
   "description": "CDD JSON-RPC server for TypeScript",
-  "main": "index.js",
+  "main": "build/server.js",
   "scripts": {
     "build": "tsc",
     "server": "node .",
