@@ -1,7 +1,8 @@
 cdd-rpc-ts
 ==========
+[![License](https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-CDD JSON-RPC server for TypeScript.
+cdd-rpc-swift is a TypeScript server that exposes a JSON-RPC interface to TypeScript AST manipulation, following Compiler Driven Development (CDD) methodology.
 
 ## Install
 
@@ -13,6 +14,8 @@ CDD JSON-RPC server for TypeScript.
 ```bash:
 npm run build
 ```
+
+---
 
 ## License
 
