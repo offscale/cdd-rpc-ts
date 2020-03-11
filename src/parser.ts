@@ -176,7 +176,7 @@ function extractParam(node: ts.ParameterDeclaration) {
   return null;
 }
 
-function stringToSource(code: string): ts.SourceFile {
+export function stringToSource(code: string): ts.SourceFile {
   return ts.createSourceFile(
     "someFileName.ts",
     code,

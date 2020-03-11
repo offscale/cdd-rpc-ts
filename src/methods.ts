@@ -1,6 +1,28 @@
 import { Generator } from "./generator";
 import * as Parser from "./parser";
 
+// RPC CALL: serialise
+// generate code from adt
+export function serialise(params, reply) {
+  console.log("-> serialise: ", params);
+
+  let ast = Parser.stringToSource(params.code);
+
+  console.log("<- serialise: ", { ast: ast });
+  reply(null, { ast: ast });
+}
+
+// RPC CALL: deserialise
+// generate code from adt
+export function deserialise(params, reply) {
+  console.log("-> deserialise: ", params);
+
+  let code = Parser.stringToSource(params.code);
+
+  console.log("-> deserialise: ", { code: code });
+  reply(null, { code: code });
+}
+
 // RPC CALL: generate
 // generate code from adt
 export function generate(params, reply) {
