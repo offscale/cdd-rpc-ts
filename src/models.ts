@@ -1,4 +1,3 @@
-
 export class SyncResult {
     models: [{
         instruction: SyncInstruction,
