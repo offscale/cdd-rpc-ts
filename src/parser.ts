@@ -7,7 +7,7 @@ export function parseProject(code: string) {
 
 function extractModels(code: string): Project.Model[] {
   // extract models
-  let sourceFile = stringToSource(code);
+  let sourceFile = serialise(code);
   const models = [];
 
   ts.forEachChild(sourceFile, (node: ts.Node) => {
@@ -70,7 +70,7 @@ function extractRequests(code: string): Array<{name: string,
   response_type: string,
   error_type: string}> {
   // extract models
-  let sourceFile = stringToSource(code);
+  let sourceFile = serialise(code);
   var requests = [];
 
   ts.forEachChild(sourceFile, (node: ts.Node) => {
@@ -182,7 +182,7 @@ function extractParam(node: ts.ParameterDeclaration): Project.BaseVariable | und
   return null;
 }
 
-export function stringToSource(code: string): ts.SourceFile {
+export function serialise(code: string): ts.SourceFile {
   return ts.createSourceFile(
     "someFileName.ts",
     code,
@@ -190,4 +190,23 @@ export function stringToSource(code: string): ts.SourceFile {
     /*setParentNodes*/ false,
     ts.ScriptKind.TS
   );
+}
+
+export function deserialise(ast: ts.Node): string {
+  const resultFile = ts.createSourceFile(
+    'test.ts',
+    '',
+    ts.ScriptTarget.Latest,
+    false,
+    ts.ScriptKind.TS,
+  );
+  const printer = ts.createPrinter({
+    newLine: ts.NewLineKind.LineFeed,
+  });
+  const result = printer.printNode(
+    ts.EmitHint.Unspecified,
+    ast,
+    resultFile,
+  );
+  return result;
 }

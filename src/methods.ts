@@ -7,10 +7,13 @@ import { Params } from "./defintions";
 export function serialise(params, reply) {
   console.log("-> serialise: ", params);
 
-  let ast = Parser.stringToSource(params.code);
+  // let ast = Parser.stringToSource(params.code);
 
-  console.log("<- serialise: ", { ast: ast });
-  reply(null, { ast: ast });
+  // console.log("<- serialise: ", JSON.stringify(ast.statements, null, '\t'));
+  // reply(null, { ast: ast.statements, formattedCode:  });
+
+  let ast = Parser.serialise(params.code);
+  reply(null, { ast: ast, formattedCode: Parser.deserialise(ast) });
 }
 
 // RPC CALL: deserialise
@@ -18,9 +21,9 @@ export function serialise(params, reply) {
 export function deserialise(params, reply) {
   console.log("-> deserialise: ", params);
 
-  let code = Parser.stringToSource(params.code);
+  let code = Parser.deserialise(params.ast);
 
-  console.log("-> deserialise: ", { code: code });
+  console.log("<- deserialise: ", { code: code });
   reply(null, { code: code });
 }
 
