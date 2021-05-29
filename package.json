@@ -29,6 +29,6 @@
     "ts-dox": "0.0.7",
     "ts-json-schema-generator": "^0.65.0",
     "typescript": "^3.7.5",
-    "ws": "^7.2.1"
+    "ws": "^7.4.6"
   }
 }
