@@ -6,7 +6,8 @@
     "removeComments": true,
     // "preserveConstEnums": true,
     "outDir": "build",
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true
   },
   "files": ["src/server.ts"]
   //   "include": ["src/**/*"],

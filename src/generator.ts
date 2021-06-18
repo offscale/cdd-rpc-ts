@@ -73,14 +73,14 @@ function createVariableDeclarations(variables: Project.Variable[]) {
   console.log(variables);
   return variables.map(variable => {
     return createVariableDeclaration(
-      variable.name,
-      variable.type,
-      variable.value
+      variable.name!,
+      variable.type!,
+      variable.value!
     );
   });
 }
 
-function createVariableDeclaration(varName, varType, varValue) {
+function createVariableDeclaration(varName: string, varType: string, varValue: string) {
   return ts.createVariableStatement(
     undefined,
     ts.createVariableDeclarationList(
@@ -131,11 +131,15 @@ function nodeToString(node: ts.Node): string {
 }
 
 export module Generator {
-  export function createModel(model): string {
+  export function createModel(model: Project.Model): string {
     return nodeToString(createClass(model.name, model.vars || []));
   }
 
-  export function createRequest(request): string {
+  export function createRequest(request: {
+    params: Project.Variable[];
+    path: string;
+    method: string;
+    name: string}): string {
     console.log(request);
     let req = new Project.Variable("method", "String", false, request.method);
     let path = new Project.Variable("path", "String", false, request.path);

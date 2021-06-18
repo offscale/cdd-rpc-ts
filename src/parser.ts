@@ -1,14 +1,16 @@
-import { Project } from "./project";
+import {Project} from "./project";
 import ts, { SyntaxKind } from "typescript";
 
 export function parseProject(code: string) {
   return { models: extractModels(code), requests: extractRequests(code) };
 }
 
-function extractModels(code: string): Project.Model[] {
+function extractModels(code: string): { name: string, vars: Project.BaseVariable[]}[] {
   // extract models
   let sourceFile = serialise(code);
-  const models = [];
+  const models: {
+    name: string,
+    vars: Project.BaseVariable[]}[] = [];
 
   ts.forEachChild(sourceFile, (node: ts.Node) => {
     // if node is a Class,
@@ -16,13 +18,13 @@ function extractModels(code: string): Project.Model[] {
       // immediately push it (incorrect assumption, need to fix this)
 
       let className = node.name.escapedText;
-      let vars = [];
+      let vars: Array<Project.BaseVariable> = [];
 
       ts.forEachChild(node, (node: ts.Node) => {
         // looking for variables...
 
         if (ts.isPropertyDeclaration(node) && node.name) {
-          var name: string, ty: string;
+          let name: string|null = null, ty: string|null = null;
 
           // get name
           if (ts.isIdentifier(node.name)) {
@@ -30,14 +32,14 @@ function extractModels(code: string): Project.Model[] {
           }
 
           // check for complex types
-          if (ts.isTypeReferenceNode(node.type)) {
+          if (ts.isTypeReferenceNode(node.type!)) {
             if (ts.isIdentifier(node.type.typeName)) {
               ty = node.type.typeName.escapedText.toString();
             }
           }
 
           // check for simple types
-          if (node.type.kind == SyntaxKind.StringKeyword) {
+          if (node.type!.kind == SyntaxKind.StringKeyword) {
             ty = "String";
           }
 
@@ -46,7 +48,7 @@ function extractModels(code: string): Project.Model[] {
               name: name,
               type: ty,
               optional: false,
-              value: null
+              value: undefined
             });
           }
         }
@@ -63,15 +65,10 @@ function extractModels(code: string): Project.Model[] {
 }
 
 // todo: skip double parsing, refactor
-function extractRequests(code: string): Array<{name: string,
-  path: string,
-  params: string,
-  method: string,
-  response_type: string,
-  error_type: string}> {
+function extractRequests(code: string): Array<Project.Request> {
   // extract models
   let sourceFile = serialise(code);
-  var requests = [];
+  let requests: Array<Project.Request> = [];
 
   ts.forEachChild(sourceFile, (node: ts.Node) => {
     // if node is a fn,
@@ -79,13 +76,13 @@ function extractRequests(code: string): Array<{name: string,
       const func = node as ts.FunctionDeclaration;
       const fnName = node.name as ts.Identifier;
 
-      requests.push({
+      requests.push(<Project.Request>{
         name: fnName.escapedText.toString(),
-        path: extractVariable(func, "path"),
-        params: extractParams(func),
-        method: extractVariable(func, "method"),
+        path: extractVariable(func, "path")!,
+        vars: extractParams(func)!,
+        method: extractVariable(func, "method")!,
         response_type: "response",
-        error_type: "error"
+        error_type: "error",
       });
     }
   });
@@ -96,7 +93,7 @@ function extractRequests(code: string): Array<{name: string,
 function extractVariable(
   func: ts.FunctionDeclaration,
   varName: string
-): string {
+): string|null {
   if (func.body == null) {
     return null;
   }
@@ -109,13 +106,13 @@ function extractVariable(
   return null;
 }
 
-function findVariable(fnBody: ts.FunctionBody, name: string): Project.BaseVariable {
-  let variable: Project.BaseVariable;
+function findVariable(fnBody: ts.FunctionBody, name: string): Project.BaseVariable|null {
+  let variable: Project.BaseVariable|null = null;
 
   fnBody.statements.forEach((statement: ts.Statement) => {
     if (ts.isVariableStatement(statement)) {
       statement.declarationList.declarations.forEach(declaration => {
-        if (ts.isVariableDeclaration(declaration)) {
+        if (ts.isVariableDeclaration(declaration) && declaration.type != null) {
           const varName = declaration.name as ts.Identifier;
           const varType = declaration.type.kind as ts.SyntaxKind;
           const varValue = declaration.initializer as ts.StringLiteral;
@@ -135,7 +132,7 @@ function findVariable(fnBody: ts.FunctionBody, name: string): Project.BaseVariab
   return variable;
 }
 
-function extractParams(node: ts.Node) {
+function extractParams(node: ts.Node): Project.BaseVariable[] {
   const params: Project.BaseVariable[] = [];
 
   ts.forEachChild(node, node => {
@@ -151,12 +148,15 @@ function extractParams(node: ts.Node) {
 }
 
 function extractParam(node: ts.ParameterDeclaration): Project.BaseVariable | undefined {
-  let name: string, ty: string;
+  let name: string|null=null, ty: string|null=null;
 
   // get name
   if (ts.isIdentifier(node.name)) {
     name = node.name.escapedText.toString();
   }
+
+  if (node.type == null)
+    return undefined;
 
   // check for complex types
   if (ts.isTypeReferenceNode(node.type)) {
@@ -175,11 +175,11 @@ function extractParam(node: ts.ParameterDeclaration): Project.BaseVariable | und
       name: name,
       type: ty,
       optional: false,
-      value: null
+      value: undefined
     };
   }
 
-  return null;
+  return undefined;
 }
 
 export function serialise(code: string): ts.SourceFile {
@@ -200,13 +200,14 @@ export function deserialise(ast: ts.Node): string {
     false,
     ts.ScriptKind.TS,
   );
+
   const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
   });
-  const result = printer.printNode(
+
+  return printer.printNode(
     ts.EmitHint.Unspecified,
     ast,
     resultFile,
   );
-  return result;
 }

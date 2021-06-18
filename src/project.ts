@@ -21,13 +21,14 @@ export module Project {
       normalizeVariableType(variable)
     })
     return model
-  };
+  }
+
   export function normalizeRequestType(request: Request): Request {
     request.vars.forEach(variable => {
       normalizeVariableType(variable)
     })
     return request
-  };
+  }
 
   function normalizeVariableType(variable: Variable): Variable {
     variable.type = Variable.typeFrom(variable.type)
@@ -45,9 +46,9 @@ export module Project {
   }
 
   export class BaseVariable {
-    name: string
-    type: string
-    optional: boolean
+    name!: string
+    type!: string
+    optional!: boolean
     value?: string
   }
 
@@ -100,7 +101,7 @@ export module Project {
         return type as string
       }
       if (typeof type == 'object') {
-        const obj = type as object
+        const obj: {"Complex"?: any, "Array"?: any} = type;
         if (obj["Complex"] != undefined) {
           return obj["Complex"]
         }

@@ -1,6 +1,6 @@
 {
   "name": "cdd-rpc-ts",
-  "version": "0.0.3",
+  "version": "0.0.4-alpha",
   "description": "CDD JSON-RPC server for TypeScript",
   "main": "build/server.js",
   "scripts": {
@@ -20,15 +20,15 @@
   },
   "homepage": "https://github.com/offscale/cdd-rpc-ts#readme",
   "devDependencies": {
-    "@types/express": "^4.17.2",
+    "@types/express": "^4.17.12",
     "@types/json-rpc-ws": "^4.0.3"
   },
   "dependencies": {
     "express": "^4.17.1",
     "json-rpc-ws": "^7.0.1",
     "ts-dox": "0.0.7",
-    "ts-json-schema-generator": "^0.65.0",
-    "typescript": "^3.7.5",
-    "ws": "^7.2.1"
+    "ts-json-schema-generator": "^0.93.0",
+    "typescript": "^4.3.4",
+    "ws": "^7.5.0"
   }
 }
