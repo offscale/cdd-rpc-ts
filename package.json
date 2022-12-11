@@ -24,7 +24,7 @@
     "@types/json-rpc-ws": "^4.0.3"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "json-rpc-ws": "^7.0.1",
     "ts-dox": "0.0.7",
     "ts-json-schema-generator": "^0.93.0",
